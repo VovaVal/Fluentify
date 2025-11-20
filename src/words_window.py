@@ -58,6 +58,7 @@ class WordsWindow(QMainWindow, Ui_MainWindow):
         self.back_study_folder_2.clicked.connect(self.back_study_folder_clicked)
         self.back_btn_main.clicked.connect(self.back_learn_main)
         self.back_btn_main_1.clicked.connect(self.back_learn_main)
+        self.back_test_btn_folder.clicked.connect(self.back_btn)
 
         self.theme.currentIndexChanged.connect(self.apply_theme)
 
@@ -186,6 +187,9 @@ class WordsWindow(QMainWindow, Ui_MainWindow):
         if hasattr(sys, '_MEIPASS'):  # если приложение запущено как .exe
             return os.path.join(sys._MEIPASS, relative_path)
         return os.path.join(os.path.dirname(__file__), relative_path)
+
+    def back_btn(self):
+        self.stackedWidget_2.setCurrentIndex(2)
 
     def back_test_btn(self):
         self.stackedWidget.setCurrentIndex(self.stackedWidget.currentIndex() - 3)
