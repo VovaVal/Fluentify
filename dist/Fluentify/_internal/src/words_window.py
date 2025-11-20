@@ -5,13 +5,13 @@ import datetime
 from PyQt6.QtWidgets import QMainWindow, QMenu, QInputDialog, QMessageBox, QDialog, QTableWidget, QTableWidgetItem, \
     QVBoxLayout, QHeaderView, QListWidget, QLineEdit, QLabel, QHBoxLayout, QRadioButton, QGroupBox, QDialogButtonBox, \
     QPushButton, QTextBrowser
-from PyQt6.QtWidgets import QCalendarWidget, QApplication
-from PyQt6.QtGui import QColor, QTextCharFormat
+from PyQt6.QtWidgets import QCalendarWidget
+from PyQt6.QtGui import QColor
 from src.ui.words_window import Ui_MainWindow
 from src.database import VocabularyDatabase
 from pathlib import Path
 from PyQt6.QtCore import Qt, QDate
-from PyQt6.QtGui import QAction, QFont, QIcon
+from PyQt6.QtGui import QAction, QIcon
 from src.dialog import AddModulesToFolderDialog, DeleteModulesDialog, DeleteFoldersDialog, AddWordsDialog
 from src.flashcards import Flashcards, StudyWords, ReStudyWords, TestWords
 from src.radio_window import RadioTabHandler
@@ -58,6 +58,8 @@ class WordsWindow(QMainWindow, Ui_MainWindow):
         self.back_study_folder_2.clicked.connect(self.back_study_folder_clicked)
         self.back_btn_main.clicked.connect(self.back_learn_main)
         self.back_btn_main_1.clicked.connect(self.back_learn_main)
+        self.back_test_btn_folder.clicked.connect(self.back_btn)
+        self.back_test_btn_folder_1.clicked.connect(self.back_btn)
 
         self.theme.currentIndexChanged.connect(self.apply_theme)
 
@@ -177,6 +179,7 @@ class WordsWindow(QMainWindow, Ui_MainWindow):
         self.amount_not_learned_words_folder_label.mousePressEvent = self.words_amount_not_learned_module_folder_clicked
 
         self.back_test_1.clicked.connect(self.back_test_btn)
+        self.back_test_2.clicked.connect(self.back_test_btn)
         self.back_study_btn_2.clicked.connect(self.back_test_btn)
 
         self.add_key_openrouter.clicked.connect(self.add_key)
@@ -186,6 +189,9 @@ class WordsWindow(QMainWindow, Ui_MainWindow):
         if hasattr(sys, '_MEIPASS'):  # если приложение запущено как .exe
             return os.path.join(sys._MEIPASS, relative_path)
         return os.path.join(os.path.dirname(__file__), relative_path)
+
+    def back_btn(self):
+        self.stackedWidget_2.setCurrentIndex(2)
 
     def back_test_btn(self):
         self.stackedWidget.setCurrentIndex(self.stackedWidget.currentIndex() - 3)
@@ -1720,7 +1726,6 @@ class HighlightCalendar(QCalendarWidget):
 def resource_path(relative_path):
     """ Получить абсолютный путь к ресурсу, работает для .exe и обычного запуска """
     try:
-        # PyInstaller создает временную папку _MEIPASS
         base_path = Path(sys._MEIPASS)
     except Exception:
         base_path = Path(__file__).parent.parent

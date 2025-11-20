@@ -287,7 +287,6 @@ class AddWordsDialog(QDialog):
         if len(self.field_pairs) <= 1:
             return
 
-        # Находим индекс
         index = -1
         for i in range(self.fields_layout.count()):
             item = self.fields_layout.itemAt(i)
@@ -296,16 +295,15 @@ class AddWordsDialog(QDialog):
                 break
 
         if index == -1:
-            return  # не найден
+            return
 
-        # Удаляем из списка данных
         self.field_pairs.pop(index)
 
         # Удаляем все виджеты в layout'е
         while layout_to_remove.count():
             child = layout_to_remove.takeAt(0)
             if child.widget():
-                child.widget().setParent(None)  # ← ключевое: отсоединяем от родителя
+                child.widget().setParent(None)
 
         # Удаляем layout из родительского layout'а
         self.fields_layout.removeItem(layout_to_remove)
@@ -358,7 +356,6 @@ class AddWordsDialog(QDialog):
 
         layout_to_remove = first_item.layout()
 
-        # Удаляем из данных
         self.field_pairs.pop(0)
 
         # Удаляем виджеты

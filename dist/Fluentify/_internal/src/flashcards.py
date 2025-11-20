@@ -141,7 +141,6 @@ class Flashcards:
             # Через короткую задержку — показываем обратную сторону
             QTimer.singleShot(120, lambda: self._show_back_side(definition))
         else:
-            # Возвращаемся к лицевой стороне
             self._show_front_side()
 
     def _show_back_side(self, text):
@@ -284,7 +283,6 @@ class StudyWords:
         self.words_with_choice = [i[1] for i in self.words.copy()]
         self.words_without_choice = [i[-1] for i in self.words.copy()]
 
-        # словарь(термин слова: слово)
         self.word_meaning_dict = [(i[1], i[-1]) for i in self.words.copy()]
         random.shuffle(self.word_meaning_dict)
 
@@ -338,7 +336,7 @@ class StudyWords:
         res = text == self.words_not_choice[0]
         self.steps += 1
 
-        if not self.words_not_choice:  # защита от пустого списка
+        if not self.words_not_choice:
             return
 
         if res:
@@ -532,7 +530,6 @@ class ReStudyWords:
         self.words_with_choice = [i[1] for i in self.words.copy()]
         self.words_without_choice = [i[-1] for i in self.words.copy()]
 
-        # словарь(термин слова: слово)
         self.word_meaning_dict = [(i[1], i[-1]) for i in self.words.copy()]
         random.shuffle(self.word_meaning_dict)
 
@@ -787,11 +784,10 @@ class TestWords:
         self.unique_all_words = list(set([i[-1] for i in self.words.copy()]))
 
         # слова, когда нужно выбрать слово, основываясь по термину
-        self.words_with_choice = [i[1] for i in self.words[:half_words].copy()]  # половина слов
-        self.words_without_choice = [i[-1] for i in self.words[:half_words].copy()]  # половина слов
+        self.words_with_choice = [i[1] for i in self.words[:half_words + 1].copy()]  # половина слов
+        self.words_without_choice = [i[-1] for i in self.words[:half_words + 1].copy()]  # половина слов
 
-        # словарь(термин слова: слово)
-        self.word_meaning_dict = [(i[1], i[-1]) for i in self.words[half_words:].copy()]
+        self.word_meaning_dict = [(i[1], i[-1]) for i in self.words[half_words + 1:].copy()]
         random.shuffle(self.word_meaning_dict)
 
         self.choice = True
@@ -874,7 +870,6 @@ class TestWords:
             if not self.words_choice and not self.words_not_choice:
                 QTimer.singleShot(1400, self.different_style)
             else:
-                # Переходим к следующему слову
                 QTimer.singleShot(1400, self.next_word)
 
     def highlight_correct_answer(self, correct_text):
