@@ -196,7 +196,6 @@ class RadioTabHandler:
                         QMessageBox.information(self.window, 'Ошибка', 'Ссылка недействительна.')
                         return
 
-                    # Обновляем базовые данные
                     self.db.update_radio_station(id_radio, name, url)
 
                     # Работаем с изображением ТОЛЬКО при изменении
@@ -206,10 +205,8 @@ class RadioTabHandler:
                     elif action == "new":
                         saved_path = self.save_radio_image(img_path, id_radio)
                         self.db.add_image_radio(id_radio, saved_path)
-                    # elif action == "keep": ничего не делаем!
 
-                    item.setText(name)  # Обновляем только элемент списка
-                    # НЕ вызываем upload_words() - это вызывает краш!
+                    item.setText(name)
 
                 except ValueError as e:
                     QMessageBox.warning(self.window, "Ошибка", str(e))
@@ -242,9 +239,7 @@ class RadioTabHandler:
         if not source_path or source_path == "Изображения нет":
             return None
 
-        # Если source_path — уже относительный путь из БД → ничего не делаем
         if source_path.startswith("radio_img/"):
-            # Это уже сохранённое изображение → не копируем повторно
             return source_path
 
         img_dir = Path(__file__).parent.parent / "data" / "radio_img"
@@ -590,7 +585,6 @@ class ScalableImageLabel(QLabel):
     def _scale_pixmap(self):
         if self._pixmap.isNull():
             return
-        # Масштабируем с сохранением пропорций
         scaled = self._pixmap.scaled(
             self.size(),
             Qt.AspectRatioMode.KeepAspectRatio,
@@ -635,9 +629,8 @@ class FakeEqualizer(QWidget):
 
 
 def resource_path(relative_path):
-    """ Получить абсолютный путь к ресурсу, работает для .exe и обычного запуска """
+    """ Получить абсолютный путь к ресурсу"""
     try:
-        # PyInstaller создает временную папку _MEIPASS
         base_path = Path(sys._MEIPASS)
     except Exception:
         base_path = Path(__file__).parent.parent

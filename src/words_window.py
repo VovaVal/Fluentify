@@ -5,13 +5,13 @@ import datetime
 from PyQt6.QtWidgets import QMainWindow, QMenu, QInputDialog, QMessageBox, QDialog, QTableWidget, QTableWidgetItem, \
     QVBoxLayout, QHeaderView, QListWidget, QLineEdit, QLabel, QHBoxLayout, QRadioButton, QGroupBox, QDialogButtonBox, \
     QPushButton, QTextBrowser
-from PyQt6.QtWidgets import QCalendarWidget, QApplication
-from PyQt6.QtGui import QColor, QTextCharFormat
+from PyQt6.QtWidgets import QCalendarWidget
+from PyQt6.QtGui import QColor
 from src.ui.words_window import Ui_MainWindow
 from src.database import VocabularyDatabase
 from pathlib import Path
 from PyQt6.QtCore import Qt, QDate
-from PyQt6.QtGui import QAction, QFont, QIcon
+from PyQt6.QtGui import QAction, QIcon
 from src.dialog import AddModulesToFolderDialog, DeleteModulesDialog, DeleteFoldersDialog, AddWordsDialog
 from src.flashcards import Flashcards, StudyWords, ReStudyWords, TestWords
 from src.radio_window import RadioTabHandler
@@ -1726,7 +1726,6 @@ class HighlightCalendar(QCalendarWidget):
 def resource_path(relative_path):
     """ Получить абсолютный путь к ресурсу, работает для .exe и обычного запуска """
     try:
-        # PyInstaller создает временную папку _MEIPASS
         base_path = Path(sys._MEIPASS)
     except Exception:
         base_path = Path(__file__).parent.parent
