@@ -59,6 +59,7 @@ class WordsWindow(QMainWindow, Ui_MainWindow):
         self.back_btn_main.clicked.connect(self.back_learn_main)
         self.back_btn_main_1.clicked.connect(self.back_learn_main)
         self.back_test_btn_folder.clicked.connect(self.back_btn)
+        self.back_test_btn_folder_1.clicked.connect(self.back_btn)
 
         self.theme.currentIndexChanged.connect(self.apply_theme)
 
@@ -178,6 +179,7 @@ class WordsWindow(QMainWindow, Ui_MainWindow):
         self.amount_not_learned_words_folder_label.mousePressEvent = self.words_amount_not_learned_module_folder_clicked
 
         self.back_test_1.clicked.connect(self.back_test_btn)
+        self.back_test_2.clicked.connect(self.back_test_btn)
         self.back_study_btn_2.clicked.connect(self.back_test_btn)
 
         self.add_key_openrouter.clicked.connect(self.add_key)

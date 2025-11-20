@@ -787,8 +787,8 @@ class TestWords:
         self.unique_all_words = list(set([i[-1] for i in self.words.copy()]))
 
         # слова, когда нужно выбрать слово, основываясь по термину
-        self.words_with_choice = [i[1] for i in self.words[:half_words].copy()]  # половина слов
-        self.words_without_choice = [i[-1] for i in self.words[:half_words].copy()]  # половина слов
+        self.words_with_choice = [i[1] for i in self.words[:half_words + 1].copy()]  # половина слов
+        self.words_without_choice = [i[-1] for i in self.words[:half_words + 1].copy()]  # половина слов
 
         # словарь(термин слова: слово)
         self.word_meaning_dict = [(i[1], i[-1]) for i in self.words[half_words:].copy()]
