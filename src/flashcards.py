@@ -787,7 +787,7 @@ class TestWords:
         self.words_with_choice = [i[1] for i in self.words[:half_words + 1].copy()]  # половина слов
         self.words_without_choice = [i[-1] for i in self.words[:half_words + 1].copy()]  # половина слов
 
-        self.word_meaning_dict = [(i[1], i[-1]) for i in self.words[half_words:].copy()]
+        self.word_meaning_dict = [(i[1], i[-1]) for i in self.words[half_words + 1:].copy()]
         random.shuffle(self.word_meaning_dict)
 
         self.choice = True
