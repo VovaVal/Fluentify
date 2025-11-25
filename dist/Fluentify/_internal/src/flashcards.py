@@ -445,7 +445,7 @@ class StudyWords:
         self.ok_btn.setEnabled(False)
 
         if ('_'.join([i.strip().strip(',.!?-=+/*') for i in self.line_edit_word.text().lower().strip().split()])
-                == self.words_dict[0][1].lower().strip()):
+                == '_'.join([i.strip().strip(',.!?-=+/*') for i in self.words_dict[0][1].lower().split()])):
             self.line_edit_word.setStyleSheet('color: green')
             self.line_edit_word.setText(self.line_edit_word.text().strip() + " ✅")
 
@@ -695,7 +695,7 @@ class ReStudyWords:
         self.ok_btn.setEnabled(False)
 
         if ('_'.join([i.strip().strip(',.!?-=+/*') for i in self.line_edit_word.text().lower().strip().split()])
-                == self.words_dict[0][1].lower().strip()):
+                == '_'.join([i.strip().strip(',.!?-=+/*') for i in self.words_dict[0][1].lower().split()])):
             self.line_edit_word.setStyleSheet('color: green')
             self.line_edit_word.setText(self.line_edit_word.text().strip() + " ✅")
 
@@ -933,7 +933,7 @@ class TestWords:
         self.ok_btn.setEnabled(False)
 
         if ('_'.join([i.strip().strip(',.!?-=+/*') for i in self.line_edit_word.text().lower().strip().split()])
-                == self.words_dict[0][1].lower().strip()):
+                == '_'.join([i.strip().strip(',.!?-=+/*') for i in self.words_dict[0][1].lower().strip().split()])):
             self.line_edit_word.setStyleSheet('color: green')
             self.line_edit_word.setText(self.line_edit_word.text().strip() + " ✅")
             self.correct_words += 1

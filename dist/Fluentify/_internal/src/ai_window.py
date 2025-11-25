@@ -335,7 +335,7 @@ class AI:
         # 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
         # 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
         OPENROUTER_API_KEY = self.get_openrouter_key()
-        models = ["tngtech/deepseek-r1t2-chimera:free", "qwen/qwen3-30b-a3b:free",
+        models = ["tngtech/deepseek-r1t2-chimera:free", "x-ai/grok-4.1-fast:free",
                   "mistralai/mistral-small-3.1-24b-instruct:free"]
 
         response = requests.post(

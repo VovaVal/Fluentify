@@ -110,7 +110,7 @@ class VocabularyDatabase:
     def add_key(self):
         with sqlite3.connect(self.db_path) as conn:
             cur = conn.cursor()
-            key = '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'
+            key = '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'
             cur.execute('''INSERT INTO ai_key(key) VALUES(?)''', (key,))
 
             conn.commit()
