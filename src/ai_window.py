@@ -17,8 +17,22 @@ from PyQt6.QtGui import QMovie, QColor
 class AI:
     def __init__(self, parent_window, db):
         self.window = parent_window
+        self.loading_dialog = None
         self.db = db
         self.setup_ai_tab()
+
+    def show_loading_dialog(self):
+        """Показывает модальное окно загрузки"""
+        if self.loading_dialog is None:
+            self.loading_dialog = LoadingDialog(self.window)
+        self.loading_dialog.show()
+
+    def hide_loading_dialog(self):
+        """Скрывает модальное окно загрузки"""
+        if self.loading_dialog:
+            self.loading_dialog.close()
+            self.loading_dialog.deleteLater()
+            self.loading_dialog = None
 
     def setup_ai_tab(self):
         ai_tab = self.window.ai_tab
@@ -171,10 +185,11 @@ class AI:
         self.ai_stacked.setCurrentIndex(3)
 
     def make_prompt_words_ai_to_get_words(self):
-        self.label_img_look.setMovie(self.movie)
-        self.movie.start()
-        self.label_img_look.show()
-        self.generate_words_btn.hide()
+        # self.label_img_look.setMovie(self.movie)
+        # self.movie.start()
+        # self.label_img_look.show()
+        # self.generate_words_btn.hide()
+        self.show_loading_dialog()
         mother_tong = self.comboBox_lang_words_ai.currentText()
         not_mother_tong = self.comboBox_lang_look_2.currentText()
         topic = self.comboBox_topic_words.currentText()
@@ -189,21 +204,24 @@ class AI:
 {mother_tong} со значением каждого слова. Строго соблюдай заданное количество слов.
 То есть условно первая строка должна выглядеть примерно так
  "Hello, Bye, Good night", а вторая "Привет, Пока, Спокойной ночи", выведи только две строчки с сгенерированными слова, 
-больше ничего не нужно.'''
+больше ничего не нужно. Ещё раз!!! На первой строке иностранные слова, А НА ВТОРОЙ ПЕРЕВЕДЁННЫЕ!!! СЛОВА ДОЛЖНЫ БЫТЬ
+ РАЗДЕЛЕНЫ ТОЛЬКО ЗАПЯТОЙ И НЕ ДОЛЖНЫ ИМЕТЬ НИКАКИХ КАВЫЧЕК И ДРУГИХ ЭЛЕМЕНТОВ!!!'''
 
         QTimer.singleShot(10, lambda: self.get_words_ai_response(model, prompt))
 
     def get_words_ai_response(self, model, prompt):
         res = self.ai_return_ans(model, prompt)
-        self.label_img_look.hide()
-        self.generate_words_btn.show()
+        print(res)
+        # self.label_img_look.hide()
+        # self.generate_words_btn.show()
+        self.hide_loading_dialog()
 
         translated_words = []
         meaning_words = []
 
         if res:
-            translated_words = [i.strip() for i in res.split('\n')[0].split(', ')]
-            meaning_words = [i.strip() for i in res.split('\n')[1].split(', ')]
+            translated_words = [i.strip() for i in res.split('\n')[0].split(',')]
+            meaning_words = [i.strip() for i in res.split('\n')[1].split(',')]
             self.words_test(translated_words, meaning_words)
 
         if res and translated_words and meaning_words and len(translated_words) == len(meaning_words):
@@ -257,7 +275,8 @@ class AI:
  В выводе напиши, почему ты оставил такую оценку, похвали пользователя, даже если он плохо написал сочинение. Весь ответ
  на русском. На последней строке оставь оценку от 0 до 100. На последней строке должна быть ТОЛЬКО одна оценка, цифрами,
   не словами, ничего писать словами не надо, АБСОЛЮТНО, ПРОСТО ОЦЕНКА, ЧИСЛОМ, НЕ ПИШИ СЛОВА "ОЦЕНКА",
-   "ИТОГОВАЯ ОЦЕНКА", просто число. Тема сочинения: {topic}; Текст сочинения: {essay_text}.'''
+   "ИТОГОВАЯ ОЦЕНКА", просто число. Тема сочинения: {topic}; Текст сочинения: {essay_text}.
+    Будь максимально жёстким и оценивай честно.'''
 
         self.label_gif.setMovie(self.movie)
         self.movie.start()
@@ -282,32 +301,34 @@ class AI:
         model = self.comboBox_ai_model.currentIndex()
 
         self.textBrowser_essay_topic.setText('')
-        self.textBrowser_essay_topic.hide()
-
-        self.label_gif.setMovie(self.movie)
-        self.movie.start()
-        self.label_gif.show()
+        # self.textBrowser_essay_topic.hide()
+        #
+        # self.label_gif.setMovie(self.movie)
+        # self.movie.start()
+        # self.label_gif.show()
+        self.show_loading_dialog()
 
         QTimer.singleShot(10, lambda: self._perform_ai_request(model, prompt))
 
     def _perform_ai_request(self, model, prompt, flag=False):
         ans = self.ai_return_ans(model, prompt)
+        self.hide_loading_dialog()
         if not flag:
             if ans:
                 self.textBrowser_essay_topic.setText(ans)
             else:
                 QMessageBox.warning(self.window, "Ошибка", "К сожалению, не удалось сгенерировать тему.")
 
-            self.movie.stop()
-            self.label_gif.hide()
-            self.textBrowser_essay_topic.show()
+            # self.movie.stop()
+            # self.label_gif.hide()
+            # self.textBrowser_essay_topic.show()
 
         else:
             if not ans:
                 QMessageBox.warning(self.window, "Ошибка", "К сожалению, не удалось проверить сочинение.")
 
             else:
-                self.label_gif.hide()
+                # self.label_gif.hide()
                 self.ans = ans
                 print(self.ans.split('\n'))
                 last_row = self.ans.split('\n')[-1]
@@ -328,37 +349,53 @@ class AI:
     def get_openrouter_key(self):
         return self.db.get_key()
 
-    def ai_return_ans(self, model, message):
-        # ваш OPENROUTER_API_KEY
-        # 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
-        # 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
-        # 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
-        # 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
+    def ai_return_ans(self, model_index, message):
         OPENROUTER_API_KEY = self.get_openrouter_key()
-        models = ["tngtech/deepseek-r1t2-chimera:free", "x-ai/grok-4.1-fast:free",
-                  "mistralai/mistral-small-3.1-24b-instruct:free"]
+        if not OPENROUTER_API_KEY:
+            print("Ошибка: Не найден API-ключ. Установите переменную окружения OPENROUTER_API_KEY")
+            return False
 
-        response = requests.post(
-            url="https://openrouter.ai/api/v1/chat/completions",
-            headers={
-                "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-                "HTTP-Referer": "http://localhost",
-            },
-            json={
-                "model": models[model],
-                "messages": [
-                    {"role": "user",
-                     "content": message},
-                ],
-                "temperature": 0.7,
-            }
-        )
+        base_url = "https://openrouter.ai/api/v1"
+        url = f"{base_url}/chat/completions"
 
-        # Вывод ответа
-        if response.status_code == 200:
+        headers = {
+            "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+            "Content-Type": "application/json",
+            "HTTP-Referer": "http://localhost",
+            "X-Title": "My App",
+        }
+        print(headers)
+
+        models_list = [
+            "nvidia/nemotron-nano-9b-v2:free",
+            "nvidia/nemotron-3-nano-30b-a3b:free",
+            'liquid/lfm-2.5-1.2b-thinking:free'
+        ]
+
+        if model_index >= len(models_list):
+            print(f"Ошибка: Модели с индексом {model_index} не существует.")
+            return False
+
+        selected_model = models_list[model_index]
+
+        payload = {
+            "model": selected_model,
+            "messages": [
+                {"role": "user", "content": message}
+            ],
+            "temperature": 0.7,
+        }
+
+        try:
+            response = requests.post(url, headers=headers, json=payload)
+            response.raise_for_status()
             return response.json()["choices"][0]["message"]["content"]
-        else:
-            print(response.status_code)
+
+        except requests.exceptions.RequestException as e:
+            print(f"Ошибка при запросе к OpenRouter: {e}")
+            if response is not None:
+                print(f"Статус: {response.status_code}")
+                print(f"Ответ сервера: {response.text}")
             return False
 
 
@@ -626,3 +663,39 @@ class StudyAIWords:
             else:
                 # Переходим к следующему слову
                 QTimer.singleShot(1400, self.load_words_write)
+
+
+class LoadingDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowFlags(Qt.WindowType.Dialog | Qt.WindowType.FramelessWindowHint)
+        self.setModal(True)
+        self.setFixedSize(300, 200)
+
+        if parent:
+            parent_geo = parent.geometry()
+            x = parent_geo.x() + (parent_geo.width() - self.width()) // 2
+            y = parent_geo.y() + (parent_geo.height() - self.height()) // 2
+            self.move(x, y)
+
+        layout = QVBoxLayout()
+
+        self.movie_label = QLabel()
+        self.movie_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        movie = QMovie(resource_path('image/load.gif'))
+        self.movie_label.setMovie(movie)
+        movie.start()
+
+        text_label = QLabel("ИИ обрабатывает запрос...\nПожалуйста, подождите")
+        text_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        layout.addWidget(self.movie_label)
+        layout.addWidget(text_label)
+
+        self.setLayout(layout)
+
+        self.setWindowFlags(self.windowFlags() | Qt.WindowType.FramelessWindowHint)
+
+    def closeEvent(self, event):
+        event.ignore()
