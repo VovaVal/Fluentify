@@ -214,7 +214,6 @@ class AI:
 
     def get_words_ai_response(self, model, prompt):
         res = self.ai_return_ans(model, prompt)
-        print(res)
         self.hide_loading_dialog()
 
         translated_words = []
@@ -225,6 +224,8 @@ class AI:
                 translated_words = [i.strip() for i in res.split('\n')[0].split(',')]
                 meaning_words = [i.strip() for i in res.split('\n')[1].split(',')]
                 self.words_test(translated_words, meaning_words)
+            else:
+                raise Exception
 
             if res and translated_words and meaning_words and len(translated_words) == len(meaning_words):
                 pass
@@ -317,6 +318,11 @@ class AI:
 
         else:
             if not ans:
+                self.ai_ans_btn.hide()
+                self.new_essay_btn.hide()
+                self.generate_topic_btn.setEnabled(True)
+                self.send_essay_btn.show()
+
                 QMessageBox.warning(self.window, "Ошибка", "К сожалению, не удалось проверить сочинение.")
 
             else:

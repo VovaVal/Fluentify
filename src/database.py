@@ -116,7 +116,7 @@ class VocabularyDatabase:
     def add_key(self):
         with sqlite3.connect(self.db_path) as conn:
             cur = conn.cursor()
-            key = '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'
+            key = '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'
             cur.execute('''INSERT INTO ai_key(key) VALUES(?)''', (key,))
 
             conn.commit()
@@ -129,6 +129,9 @@ class VocabularyDatabase:
             return cur.fetchone()[0]
 
     def set_key(self, key):
+        if not key:
+            return
+
         with sqlite3.connect(self.db_path) as conn:
             cur = conn.cursor()
             cur.execute('''UPDATE ai_key SET key = ? WHERE id = 1''',
