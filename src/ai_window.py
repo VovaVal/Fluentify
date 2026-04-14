@@ -153,7 +153,7 @@ class AI:
             date_score_dict[i[0]].append(i[1])
 
         for i in date_score_dict:
-            date_score_dict[i] = sum(date_score_dict[i]) / len(date_score_dict[i])
+            date_score_dict[i] = max(date_score_dict[i])
 
         date_score_dict_1 = sorted(date_score_dict)
 
