@@ -22,17 +22,20 @@ class AI:
         self.setup_ai_tab()
 
     def show_loading_dialog(self):
-        """Показывает модальное окно загрузки"""
         if self.loading_dialog is None:
             self.loading_dialog = LoadingDialog(self.window)
+
+        self.window.setEnabled(False)  # блокируем главное окно
         self.loading_dialog.show()
 
     def hide_loading_dialog(self):
-        """Скрывает модальное окно загрузки"""
         if self.loading_dialog:
+            self.loading_dialog.allow_close = True  # разрешаем закрытие
             self.loading_dialog.close()
             self.loading_dialog.deleteLater()
             self.loading_dialog = None
+
+        self.window.setEnabled(True)  # возвращаем активность
 
     def setup_ai_tab(self):
         ai_tab = self.window.ai_tab
@@ -185,10 +188,6 @@ class AI:
         self.ai_stacked.setCurrentIndex(3)
 
     def make_prompt_words_ai_to_get_words(self):
-        # self.label_img_look.setMovie(self.movie)
-        # self.movie.start()
-        # self.label_img_look.show()
-        # self.generate_words_btn.hide()
         self.show_loading_dialog()
         mother_tong = self.comboBox_lang_words_ai.currentText()
         not_mother_tong = self.comboBox_lang_look_2.currentText()
@@ -212,8 +211,6 @@ class AI:
     def get_words_ai_response(self, model, prompt):
         res = self.ai_return_ans(model, prompt)
         print(res)
-        # self.label_img_look.hide()
-        # self.generate_words_btn.show()
         self.hide_loading_dialog()
 
         translated_words = []
@@ -278,9 +275,7 @@ class AI:
    "ИТОГОВАЯ ОЦЕНКА", просто число. Тема сочинения: {topic}; Текст сочинения: {essay_text}.
     Будь максимально жёстким и оценивай честно.'''
 
-        self.label_gif.setMovie(self.movie)
-        self.movie.start()
-        self.label_gif.show()
+        self.show_loading_dialog()
 
         self.generate_topic_btn.setEnabled(False)
         self.send_essay_btn.hide()
@@ -301,11 +296,6 @@ class AI:
         model = self.comboBox_ai_model.currentIndex()
 
         self.textBrowser_essay_topic.setText('')
-        # self.textBrowser_essay_topic.hide()
-        #
-        # self.label_gif.setMovie(self.movie)
-        # self.movie.start()
-        # self.label_gif.show()
         self.show_loading_dialog()
 
         QTimer.singleShot(10, lambda: self._perform_ai_request(model, prompt))
@@ -319,16 +309,11 @@ class AI:
             else:
                 QMessageBox.warning(self.window, "Ошибка", "К сожалению, не удалось сгенерировать тему.")
 
-            # self.movie.stop()
-            # self.label_gif.hide()
-            # self.textBrowser_essay_topic.show()
-
         else:
             if not ans:
                 QMessageBox.warning(self.window, "Ошибка", "К сожалению, не удалось проверить сочинение.")
 
             else:
-                # self.label_gif.hide()
                 self.ans = ans
                 print(self.ans.split('\n'))
                 last_row = self.ans.split('\n')[-1]
@@ -668,7 +653,13 @@ class StudyAIWords:
 class LoadingDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowFlags(Qt.WindowType.Dialog | Qt.WindowType.FramelessWindowHint)
+
+        self.allow_close = False
+
+        self.setWindowFlags(
+            Qt.WindowType.Dialog |
+            Qt.WindowType.FramelessWindowHint
+        )
         self.setModal(True)
         self.setFixedSize(300, 200)
 
@@ -683,9 +674,9 @@ class LoadingDialog(QDialog):
         self.movie_label = QLabel()
         self.movie_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        movie = QMovie(resource_path('image/load.gif'))
-        self.movie_label.setMovie(movie)
-        movie.start()
+        self.movie = QMovie(resource_path('image/load.gif'))
+        self.movie_label.setMovie(self.movie)
+        self.movie.start()
 
         text_label = QLabel("ИИ обрабатывает запрос...\nПожалуйста, подождите")
         text_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -695,7 +686,18 @@ class LoadingDialog(QDialog):
 
         self.setLayout(layout)
 
-        self.setWindowFlags(self.windowFlags() | Qt.WindowType.FramelessWindowHint)
-
     def closeEvent(self, event):
-        event.ignore()
+        if not self.allow_close:
+            event.ignore()
+        else:
+            event.accept()
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.drag_pos = event.globalPosition().toPoint() - self.frameGeometry().topLeft()
+            event.accept()
+
+    def mouseMoveEvent(self, event):
+        if event.buttons() == Qt.MouseButton.LeftButton:
+            self.move(event.globalPosition().toPoint() - self.drag_pos)
+            event.accept()
