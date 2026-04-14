@@ -25,17 +25,20 @@ class AI:
         if self.loading_dialog is None:
             self.loading_dialog = LoadingDialog(self.window)
 
-        self.window.setEnabled(False)  # блокируем главное окно
+        self.window.setEnabled(False)
+        self.loading_dialog.setWindowModality(Qt.WindowModality.ApplicationModal)
+        self.window.hide()
         self.loading_dialog.show()
 
     def hide_loading_dialog(self):
         if self.loading_dialog:
-            self.loading_dialog.allow_close = True  # разрешаем закрытие
+            self.loading_dialog.allow_close = True
             self.loading_dialog.close()
             self.loading_dialog.deleteLater()
             self.loading_dialog = None
 
-        self.window.setEnabled(True)  # возвращаем активность
+        self.window.setEnabled(True)
+        self.window.show()
 
     def setup_ai_tab(self):
         ai_tab = self.window.ai_tab
@@ -693,11 +696,7 @@ class LoadingDialog(QDialog):
             event.accept()
 
     def mousePressEvent(self, event):
-        if event.button() == Qt.MouseButton.LeftButton:
-            self.drag_pos = event.globalPosition().toPoint() - self.frameGeometry().topLeft()
-            event.accept()
+        pass
 
     def mouseMoveEvent(self, event):
-        if event.buttons() == Qt.MouseButton.LeftButton:
-            self.move(event.globalPosition().toPoint() - self.drag_pos)
-            event.accept()
+        pass
