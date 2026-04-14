@@ -182,7 +182,8 @@ class AI:
             ok_btn=self.ok_btn_words_look,
             stacked=self.stacked,
             stacked_main=self.main_stacked,
-            theme=self.window.get_theme
+            theme=self.window.get_theme,
+            parents_window=self.window
         )
 
         words = [(i, meaning[i], translated[i]) for i in range(len(translated))]
@@ -406,7 +407,7 @@ def check_wifi():
 
 class StudyAIWords:
     def __init__(self, label_guess, label_explanation, list_widget, line_edit_word,
-                 ok_btn, stacked, stacked_main, theme):
+                 ok_btn, stacked, stacked_main, theme, parents_window):
         self.label_guess = label_guess
         self.label_guess.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.label_guess.setWordWrap(True)
@@ -418,6 +419,7 @@ class StudyAIWords:
         self.stacked = stacked
         self.stacked_main = stacked_main
         self.in_process = False
+        self.parents_window = parents_window
         self.label_explanation.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.label_explanation.setWordWrap(True)
         self.label_explanation.setStyleSheet("""
@@ -571,6 +573,7 @@ class StudyAIWords:
         """Завершает обучение"""
         self.in_process = False
         self.stacked_main.setCurrentIndex(self.stacked_main.currentIndex() - 3)
+        self.parents_window.generate_words_btn.setEnabled(True)
 
     def different_style(self, flag=True):
         if self.stacked.currentIndex() == 0:
