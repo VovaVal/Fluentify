@@ -220,14 +220,16 @@ class AI:
         translated_words = []
         meaning_words = []
 
-        if res:
-            translated_words = [i.strip() for i in res.split('\n')[0].split(',')]
-            meaning_words = [i.strip() for i in res.split('\n')[1].split(',')]
-            self.words_test(translated_words, meaning_words)
+        try:
+            if res:
+                translated_words = [i.strip() for i in res.split('\n')[0].split(',')]
+                meaning_words = [i.strip() for i in res.split('\n')[1].split(',')]
+                self.words_test(translated_words, meaning_words)
 
-        if res and translated_words and meaning_words and len(translated_words) == len(meaning_words):
-            pass
-        else:
+            if res and translated_words and meaning_words and len(translated_words) == len(meaning_words):
+                pass
+
+        except Exception:
             self.generate_words_btn.setEnabled(True)
             QMessageBox.information(self.window, 'Ошибка', 'К сожалению, мы не смогли сгенерировать вам слова. '
                                                            'Попробуйте позже ещё раз.')
@@ -318,15 +320,19 @@ class AI:
                 QMessageBox.warning(self.window, "Ошибка", "К сожалению, не удалось проверить сочинение.")
 
             else:
-                self.ans = ans
-                print(self.ans.split('\n'))
-                last_row = self.ans.split('\n')[-1]
-                print(last_row)
-                num = self.extract_single_number(str(last_row))
-                print(num)
+                try:
+                    self.ans = ans
+                    print(self.ans.split('\n'))
+                    last_row = self.ans.split('\n')[-1]
+                    print(last_row)
+                    num = self.extract_single_number(str(last_row))
+                    print(num)
 
-                if isinstance(num, int):
-                    self.db.add_data_essay(num)
+                    if isinstance(num, int):
+                        self.db.add_data_essay(num)
+
+                except Exception:
+                    QMessageBox.warning(self.window, "Ошибка", "К сожалению, не удалось проверить сочинение.")
 
     def extract_single_number(self, text: str) -> int | None:
         numbers = re.findall(r'\d+', text)
