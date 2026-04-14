@@ -661,14 +661,17 @@ class VocabularyDatabase:
             data = self.get_learned_not_learned_by_date()
 
             for i in data:
-                cur.execute('''SELECT * FROM words_statistics WHERE date = ?''', (i,))
-                if cur.fetchone():
-                    cur.execute('''UPDATE words_statistics SET learned = ?, not_learned = ? WHERE date = ?''',
-                                (data[i][0], data[i][1], i))
+                try:
+                    cur.execute('''SELECT * FROM words_statistics WHERE date = ?''', (i,))
+                    if cur.fetchone():
+                        cur.execute('''UPDATE words_statistics SET learned = ?, not_learned = ? WHERE date = ?''',
+                                    (data[i][0], data[i][1], i))
 
-                else:
-                    cur.execute('''INSERT INTO words_statistics(date, learned, not_learned) VALUES (?, ?, ?)''',
-                                (i, data[i][0], data[i][1]))
+                    else:
+                        cur.execute('''INSERT INTO words_statistics(date, learned, not_learned) VALUES (?, ?, ?)''',
+                                    (i, data[i][0], data[i][1]))
+                except Exception:
+                    pass
 
             conn.commit()
 
