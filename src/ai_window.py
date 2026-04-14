@@ -352,7 +352,6 @@ class AI:
             "HTTP-Referer": "http://localhost",
             "X-Title": "My App",
         }
-        print(headers)
 
         models_list = [
             "nvidia/nemotron-nano-9b-v2:free",
