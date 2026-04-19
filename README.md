@@ -5,3 +5,5 @@
 <a href="https://gist.github.com/ergoz/e7837a54956116167db93b016dbd51a9">Ссылка на адреса радио станций.</a>
 
 <a href="https://openrouter.ai">OpenRouter сайт для создания личного ключа.</a>
+
+<a href="https://disk.yandex.ru/d/hXN99hN1TU_Olg">Ссылка на Яндекс.Диск</a>
