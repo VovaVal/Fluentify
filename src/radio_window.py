@@ -283,7 +283,8 @@ class RadioTabHandler:
                 url,
                 timeout=timeout,
                 allow_redirects=True,
-                headers={'User-Agent': 'Mozilla/5.0'}
+                headers={'User-Agent': 'Mozilla/5.0'},
+                verify=False
             )
             return response.status_code == 200
         except requests.exceptions.RequestException:
