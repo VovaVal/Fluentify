@@ -389,16 +389,17 @@ class AI:
         response = None
 
         try:
-            response = requests.post(url, headers=headers, json=payload)
+            response = requests.post(url, headers=headers, json=payload, verify=False)
             response.raise_for_status()
             return response.json()["choices"][0]["message"]["content"]
 
-        except requests.exceptions.RequestException as e:
+        except Exception as e:
             print(f"Ошибка при запросе к OpenRouter: {e}")
             if response is not None:
                 print(f"Статус: {response.status_code}")
                 print(f"Ответ сервера: {response.text}")
             return False
+
 
 
 def resource_path(relative_path):
