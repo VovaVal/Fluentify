@@ -386,6 +386,8 @@ class AI:
             "temperature": 0.7,
         }
 
+        response = None
+
         try:
             response = requests.post(url, headers=headers, json=payload)
             response.raise_for_status()
