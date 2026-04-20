@@ -7,3 +7,5 @@
 <a href="https://openrouter.ai">OpenRouter сайт для создания личного ключа.</a>
 
 <a href="https://disk.yandex.ru/d/hXN99hN1TU_Olg">Ссылка на Яндекс.Диск</a>
+
+Тестовый ключ OpenRouter: `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`
